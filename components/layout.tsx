@@ -1,10 +1,11 @@
 "use client"
 import { Fragment, PropsWithChildren, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog, Disclosure, Transition } from '@headlessui/react'
 import {
   Bars3Icon,
   CalendarIcon,
   ChartPieIcon,
+  ChevronRightIcon,
   DocumentDuplicateIcon,
   FolderIcon,
   HomeIcon,
@@ -14,21 +15,41 @@ import {
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
 
+// const navigation = [
+//   { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
+//   { name: 'Team', href: '#', icon: UsersIcon, current: false },
+//   { name: 'Projects', href: '#', icon: FolderIcon, current: false },
+//   { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
+//   { name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
+//   { name: 'Reports', href: '#', icon: ChartPieIcon, current: false },
+// ]
 const navigation = [
   { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Team', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-  { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  { name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
-  { name: 'Reports', href: '#', icon: ChartPieIcon, current: false },
-]
-const teams = [
-  { id: 1, name: 'Heroicons', href: '#', initial: 'H', current: false },
-  { id: 2, name: 'Tailwind Labs', href: '#', initial: 'T', current: false },
-  { id: 3, name: 'Workcation', href: '#', initial: 'W', current: false },
+  {
+    name: 'Teams',
+    current: false,
+    children: [
+      { name: 'Engineering', href: '#' },
+      { name: 'Human Resources', href: '#' },
+      { name: 'Customer Success', href: '#' },
+    ],
+  },
+  {
+    name: 'Projects',
+    current: false,
+    children: [
+      { name: 'GraphQL API', href: '#' },
+      { name: 'iOS App', href: '#' },
+      { name: 'Android App', href: '#' },
+      { name: 'New Customer Portal', href: '#' },
+    ],
+  },
+  { name: 'Calendar', href: '#', current: false },
+  { name: 'Documents', href: '#', current: false },
+  { name: 'Reports', href: '#', current: false },
 ]
 
-export default function LayoutCss({children}: PropsWithChildren) {
+export default function LayoutCss({ children }: PropsWithChildren) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
@@ -41,7 +62,7 @@ export default function LayoutCss({children}: PropsWithChildren) {
         <body class="h-full">
         ```
       */}
-      <div>
+      <div className='flex '>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
             <Transition.Child
@@ -87,8 +108,8 @@ export default function LayoutCss({children}: PropsWithChildren) {
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-background px-6 pb-2">
                     <div className="flex h-16 shrink-0 items-center">
                       <Image
-                      width={32}
-                      height={32}
+                        width="0"
+                        height="0"
                         className="h-8 w-auto"
                         src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                         alt="Your Company"
@@ -109,13 +130,14 @@ export default function LayoutCss({children}: PropsWithChildren) {
                                     'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                   )}
                                 >
-                                  <item.icon
+                                  {item.icon && <item.icon
                                     className={cn(
                                       item.current ? 'text-primary' : 'text-primary group-hover:text-primary',
                                       'h-6 w-6 shrink-0'
                                     )}
                                     aria-hidden="true"
                                   />
+                                  }
                                   {item.name}
                                 </a>
                               </li>
@@ -162,13 +184,13 @@ export default function LayoutCss({children}: PropsWithChildren) {
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
-        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+        <div className="hidden relative transition-width h-screen lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-border/80 bg-background px-6">
             <div className="flex h-16 shrink-0 items-center">
               <Image
-              width={32}
-              height={32}
+                width='0'
+                height='0'
                 className="h-8 w-auto"
                 src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                 alt="Your Company"
@@ -180,13 +202,13 @@ export default function LayoutCss({children}: PropsWithChildren) {
                   <ul role="list" className="-mx-2 space-y-1">
                     {navigation.map((item) => (
                       <li key={item.name}>
-                        <a
+                        {/* <a
                           href={item.href}
                           className={cn(
                             item.current
                               ? 'bg-muted text-primary'
                               : 'text-primary/80 hover:text-primary hover:bg-muted',
-                            'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                            'group transition-background flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                           )}
                         >
                           <item.icon
@@ -197,7 +219,83 @@ export default function LayoutCss({children}: PropsWithChildren) {
                             aria-hidden="true"
                           />
                           {item.name}
-                        </a>
+                        </a> */}
+                        {!item.children ? (
+                          <a
+                            href={item.href}
+                            className={cn(
+                              item.current
+                                ? 'bg-muted text-primary'
+                                : 'text-primary/80 hover:text-primary hover:bg-muted',
+                              'group transition-background flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                            )}
+                          >
+                            {
+                              item.icon && <item.icon
+                                className={cn(
+                                  item.current ? 'text-primary' : 'text-gray-400 group-hover:text-primary',
+                                  'h-6 w-6 shrink-0'
+                                )}
+                                aria-hidden="true"
+                              />
+                            }
+                            {item.name}
+                          </a>
+                        ) : (
+
+                          <Disclosure as="div">
+                            {({ open }) => (
+                              <>
+                                <Disclosure.Button
+                                  className={cn(
+                                    item.current ? 'bg-muted' : 'hover:bg-muted',
+                                    'flex items-center w-full text-left rounded-md p-2 gap-x-3 text-sm leading-6 font-semibold text-primary'
+                                  )}
+                                >
+                                  <ChevronRightIcon
+                                    className={cn(
+                                      open ? 'rotate-90 text-gray-500' : 'text-gray-400',
+                                      'h-5 transition-transform w-5 shrink-0'
+                                    )}
+                                    aria-hidden="true"
+                                  />
+                                  {item.name}
+                                </Disclosure.Button>
+
+
+                                <Transition
+                                  as={Fragment}
+                                  enter="transition ease-out duration-100"
+                                  enterFrom="transform opacity-0 scale-95"
+                                  enterTo="transform opacity-100 scale-100"
+                                  leave="transition ease-in duration-75"
+                                  leaveFrom="transform opacity-100 scale-100"
+                                  leaveTo="transform opacity-0 scale-95"
+                                >
+                                  <Disclosure.Panel as="ul" className="mt-1  px-2">
+                                    {item.children.map((subItem) => (
+
+                                      <li key={subItem.name}
+                                      >
+                                        <Disclosure.Button
+                                          as="a"
+                                          href={subItem.href}
+                                          className={cn(
+                                            subItem.current ? 'bg-muted' : 'hover:bg-muted',
+                                            'block  rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-primary'
+                                          )}
+                                        >
+                                          {subItem.name}
+                                        </Disclosure.Button>
+                                      </li>
+                                    ))}
+                                  </Disclosure.Panel>
+                                </Transition>
+
+                              </>
+                            )}
+                          </Disclosure>
+                        )}
                       </li>
                     ))}
                   </ul>
@@ -251,7 +349,7 @@ export default function LayoutCss({children}: PropsWithChildren) {
               </ul>
             </nav>
           </div>
-        </div>
+        </div >
 
         <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-background px-4 py-4 shadow-sm sm:px-6 lg:hidden">
           <button type="button" className="-m-2.5 p-2.5 text-gray-700 lg:hidden" onClick={() => setSidebarOpen(true)}>
@@ -262,8 +360,8 @@ export default function LayoutCss({children}: PropsWithChildren) {
           <a href="#">
             <span className="sr-only">Your profile</span>
             <Image
-            width={32}
-            height={32}
+              width="0"
+              height='0'
               className="h-8 w-8 rounded-full bg-gray-50"
               src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
               alt=""
@@ -271,10 +369,10 @@ export default function LayoutCss({children}: PropsWithChildren) {
           </a>
         </div>
 
-        <main className="pb-10 lg:pl-72">
+        <main className="pb-10  flex flex-col w-full h-full overflow-hidden flex-1">
           <div className="px-4 sm:px-6 lg:px-8 ">{children}</div>
         </main>
-      </div>
+      </div >
     </>
   )
 }
